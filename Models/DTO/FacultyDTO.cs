@@ -1,12 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CloneIntime.Models.ModelTypes;
 
 namespace CloneIntime.Models.DTO
 {
-    public class FacultyDTO
+    public class FacultyDTO : FacultyModel
     {
-        public Guid id { get; set; }
-        public string Name { get; set; }
-        [Required]
-        public string Number { get; set; }
     }
 }

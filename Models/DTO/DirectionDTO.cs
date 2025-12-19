@@ -1,13 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CloneIntime.Models.ModelTypes;
 
 namespace CloneIntime.Models.DTO
 {
-    public class DirectionDTO
+    public class DirectionDTO :DirectionModel
     {
-        public Guid id { get; set; }
-        public string Name { get; set; }
-        [Required]
-        public string Number { get; set; }
-        public FacultyDTO  Faculty {get;set;}
     }
 }

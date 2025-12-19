@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CloneIntime.Models.DTO
+namespace CloneIntime.Models.ModelTypes
 {
-    public class TokenResponseDTO
+    public class TokenModel
     {
         [Required, MinLength(1)]
         public string Token { get; set; }

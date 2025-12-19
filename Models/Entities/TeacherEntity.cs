@@ -1,13 +1,8 @@
+using CloneIntime.Models.ModelTypes;
 using System.ComponentModel.DataAnnotations;
 
 namespace CloneIntime.Entities;
 
-public class TeacherEntity : BaseEntity
+public class TeacherEntity : ProfessorModel
 {
-    [Required]
-    public string Name { get; set; }
-    [EmailAddress]
-    [MinLength(6)]
-    public string Email { get; set; }
-    public List<DisciplineEntity> Disciplines { get; set; }
 }

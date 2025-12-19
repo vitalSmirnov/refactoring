@@ -1,5 +1,6 @@
 ﻿using CloneIntime.Models;
 using CloneIntime.Models.DTO;
+using CloneIntime.Models.ModelTypes;
 using CloneIntime.Services;
 using CloneIntime.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +22,7 @@ namespace CloneIntime.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<TokenResponseDTO>> Login([FromBody] CredentialsModel loginCredentials)
+        public async Task<ActionResult<TokenModel>> Login([FromBody] CredentialsModel loginCredentials)
         {
             return await _adminService.Login(loginCredentials);
         }
