@@ -1,6 +1,5 @@
 ﻿using CloneIntime.Models;
 using CloneIntime.Models.DTO;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CloneIntime.Services.Interfaces
 {

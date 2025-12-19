@@ -3,10 +3,6 @@ using CloneIntime.Models;
 using CloneIntime.Models.DTO;
 using CloneIntime.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Globalization;
-using System.Text.RegularExpressions;
-
 namespace CloneIntime.Services
 {
     public class ScheduleService : IScheduleService

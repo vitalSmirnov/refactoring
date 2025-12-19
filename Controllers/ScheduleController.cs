@@ -1,6 +1,4 @@
-﻿using CloneIntime.Entities;
-using CloneIntime.Models;
-using CloneIntime.Models.DTO;
+﻿using CloneIntime.Models.DTO;
 using CloneIntime.Services;
 using CloneIntime.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;

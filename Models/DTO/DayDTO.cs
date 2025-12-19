@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace CloneIntime.Models.DTO
 {
     public class DayDTO
