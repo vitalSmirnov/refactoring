@@ -2,6 +2,7 @@
 using CloneIntime.Models;
 using CloneIntime.Models.DTO;
 using CloneIntime.Services.Interfaces;
+using CloneIntime.Utils.helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace CloneIntime.Services
@@ -9,36 +10,15 @@ namespace CloneIntime.Services
     public class DisciplineService : IDisciplineService
     {
         private readonly Context _context;
-        public DisciplineService(Context context)
+        private readonly DisciplineHelper _disciplineHelper;
+
+        public DisciplineService(Context context, DisciplineHelper disciplineHelper)
         {
             _context = context;
+            _disciplineHelper = disciplineHelper;
+
         }
 
-        private List<DisciplineDTO> FillDisciplines(FacultyEntity disciplines)
-        {
-            var result = new List<DisciplineDTO>();
-
-            result.AddRange(disciplines.Disciplines.Select(x => new DisciplineDTO
-            {
-                Name = x.Name,
-                Id = x.Id,
-                IsActive = x.IsActive
-            }));
-            return result;
-        }
-
-        private List<DisciplineDTO> FillDisciplines(List<DisciplineEntity> disciplines)
-        {
-            var result = new List<DisciplineDTO>();
-
-            result.AddRange(disciplines.Select(x => new DisciplineDTO
-            {
-                Name = x.Name,
-                Id = x.Id,
-                IsActive = x.IsActive
-            }));
-            return result;
-        }
         public async Task<List<DisciplineDTO>> GetDisciplines(string facultyId)
         {
             var disciplineEntity = await _context.FacultyEntities
@@ -48,8 +28,7 @@ namespace CloneIntime.Services
             if (disciplineEntity == null)
                 return new List<DisciplineDTO>();
 
-
-            return FillDisciplines(disciplineEntity);
+            return _disciplineHelper.FillDisciplines(disciplineEntity);
 
         }
 
@@ -61,7 +40,7 @@ namespace CloneIntime.Services
                 return new List<DisciplineDTO>();
 
 
-            return FillDisciplines(disciplineEntity);
+            return _disciplineHelper.FillDisciplines(disciplineEntity);
 
         }
     }

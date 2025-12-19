@@ -1,17 +1,19 @@
 ﻿using CloneIntime.Models;
 using CloneIntime.Models.DTO;
+using CloneIntime.Models.ModelTypes;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CloneIntime.Services.Interfaces
 {
     public interface IAdminService
     {
-        Task Login(CredentialsModel loginCredentials);
-        Task Logout(HttpContext httpContext);
-        Task AddTeacher(ProffessorDTO newTeacher);
-        Task DeleteTeacher(string teacherId);
-        Task UpdateTeacher(string teacherId);
-        Task SetPair(SetTimeSlotModel newPairData);
-        Task DeletePair(string pairId);
-        Task UpdatePair(string id, SetTimeSlotModel PairNewData);
+        Task<ActionResult<TokenModel>> Login(CredentialsModel model);
+        Task<IActionResult> Logout(string userToken);
+        Task<IActionResult> AddTeacher(ProffessorDTO newTeacher);
+        Task<IActionResult> DeleteTeacher(string teacherId);
+        Task<IActionResult> UpdateTeacher(string teacherId, ProffessorDTO newTeacher);
+        Task<IActionResult> SetPair(SetTimeSlotModel newPairData);
+        Task<IActionResult> DeletePair(string pairId);
+        Task<IActionResult> UpdatePair(string id, SetTimeSlotModel PairNewData);
     }
 }

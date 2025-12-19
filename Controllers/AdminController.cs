@@ -2,6 +2,7 @@
 using CloneIntime.Models.DTO;
 using CloneIntime.Models.ModelTypes;
 using CloneIntime.Services;
+using CloneIntime.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,7 @@ namespace CloneIntime.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private readonly AdminService _adminService; // TODO: вернуть интерфейс вмесо сервиса
+        private readonly IAdminService _adminService; // TODO: вернуть интерфейс вмесо сервиса
         private readonly SupportService _supportService;
 
         public AdminController(AdminService adminService, SupportService supportService)
