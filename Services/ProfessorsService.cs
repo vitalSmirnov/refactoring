@@ -32,7 +32,7 @@ namespace CloneIntime.Services
             
             result.AddRange(teachers.Select(professor => new ProffessorDTO
             {
-                id = professor.Id,
+                Id = professor.Id,
                 Name = professor.Name,
                 Email = professor.Email,
                 //Disciplines = fillDisciplines(professor.Disciplines)

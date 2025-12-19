@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using CloneIntime.Models.Entities;
+using CloneIntime.Models.ModelTypes;
 
 namespace CloneIntime.Services
 {
@@ -19,7 +20,7 @@ namespace CloneIntime.Services
             _support = support;
         }
 
-        private List<DisciplineEntity> fillDiscipline(List<DisciplineDTO> disciplines)
+        private List<DisciplineEntity> fillDiscipline(List<DisciplineEntity> disciplines)
         {
             var disciplineIds = disciplines.Select(disc => disc.Id).ToList();
 
@@ -230,7 +231,7 @@ namespace CloneIntime.Services
 
         }
 
-        public async Task<ActionResult<TokenResponseDTO>> Login(CredentialsModel model)
+        public async Task<ActionResult<TokenModel>> Login(CredentialsModel model)
         {
             var user = await _context.EditorEntity.FirstOrDefaultAsync(x => x.Login == model.Email);
 
@@ -246,7 +247,7 @@ namespace CloneIntime.Services
             var token = new JwtSecurityTokenHandler().WriteToken(_support.GenerateJWT(model.Email, user.Id.ToString()));
 
 
-            return new TokenResponseDTO
+            return new TokenModel
             {
                 Token = token
             };

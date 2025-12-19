@@ -23,11 +23,11 @@ namespace CloneIntime.Services
                 Number = group.Number,
                 Direction = new DirectionDTO
                 {
-                    id = group.Id,
+                    Id = group.Id,
                     Name = group.Direction.Name,
                     Number = group.Direction.Number,
                     Faculty = new FacultyDTO{
-                        id = group.Direction.Faculty.Id,
+                        Id = group.Direction.Faculty.Id,
                         Name = group.Direction.Faculty.Name,
                         Number = group.Direction.Faculty.Number
                     }
