@@ -21,19 +21,22 @@ namespace CloneIntime.Controllers
         [HttpGet("group")]
         public async Task<WeekDTO> GetGroupsSchedule([FromQuery] List<string> number, DateTime startDate, DateTime endDate)
         {
-            return await _scheduleService.GetGroupsSchedule(number, startDate, endDate);
+            var interval = new WeekDateDTO{StartDate = startDate, EndDate = endDate};
+            return await _scheduleService.GetGroupsSchedule(number, interval);
         }
 
         [HttpGet("auditory/{auditoryNumber}")]
         public async Task<WeekDTO> GetAuditorySchedule(string auditoryNumber, DateTime startDate, DateTime endDate)
         {
-            return await _scheduleService.GetAuditorySchedule(auditoryNumber, startDate, endDate);
+            var interval = new WeekDateDTO { StartDate = startDate, EndDate = endDate };
+            return await _scheduleService.GetAuditorySchedule(auditoryNumber, interval);
         }
 
         [HttpGet("teacher")]
         public async Task<WeekDTO> GetTecherSchedule(string id, DateTime startDate, DateTime endDate)
         {
-            return await _scheduleService.GetTecherSchedule(id, startDate, endDate);
+            var interval = new WeekDateDTO { StartDate = startDate, EndDate = endDate };
+            return await _scheduleService.GetTecherSchedule(id, interval);
         }
     }
 }
