@@ -1,6 +1,4 @@
-﻿using CloneIntime.Entities;
-using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace CloneIntime.Models.DTO
 {
     public class TimeSlotDTO

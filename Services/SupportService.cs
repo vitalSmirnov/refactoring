@@ -64,23 +64,5 @@ namespace CloneIntime.Services
             var tokenEntity = _context.TokenEntity.FirstOrDefault(x => x.Token == token);
             return !(tokenEntity == null);
         }
-
-        /*private void ValidateData(List<UserEntity> users, UserRegisterModel model)
-        {
-            if (users == null)
-                throw new UserNotFoundException();
-
-            foreach (var user in users)
-            {
-                if (user.EmailAddress == model.Email)
-                    throw new EmailAlreadyInBaseException();
-
-                if (user.FullName == model.FullName)
-                    throw new NickNameAlreadyInBaseException();
-
-                if (user.PhoneNumber == model.PhoneNumber)
-                    throw new PhoneAlreadyInBaseException();
-           }*/
-        //}
     }
 }

@@ -2,7 +2,6 @@
 using CloneIntime.Models;
 using CloneIntime.Models.DTO;
 using CloneIntime.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace CloneIntime.Services
 {

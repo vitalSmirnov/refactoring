@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using CloneIntime.Models.DTO;
 using CloneIntime.Services.Interfaces;
 using CloneIntime.Services;
-using CloneIntime.Entities;
-using Microsoft.AspNetCore.Authorization;
 
 namespace CloneIntime.Controllers
 {

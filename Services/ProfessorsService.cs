@@ -14,18 +14,6 @@ namespace CloneIntime.Services
             _context = context;
         }
 
-        private List<DisciplineDTO> fillDisciplines(List<DisciplineEntity> disciplines)
-        {
-            var result = new List<DisciplineDTO>();
-            result.AddRange(disciplines.Select(x => new DisciplineDTO
-            {
-                Id = x.Id,
-                Name = x.Name,
-                IsActive = x.IsActive
-            }));
-            return result;
-        }
-
         private List<ProffessorDTO> FillProfessors(List<TeacherEntity> teachers)
         {
             var result = new List<ProffessorDTO>();

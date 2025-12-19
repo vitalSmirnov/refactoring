@@ -1,5 +1,4 @@
-﻿using CloneIntime.Entities;
-using CloneIntime.Models.ModelTypes;
+﻿using CloneIntime.Models.ModelTypes;
 
 namespace CloneIntime.Models.Entities
 {   

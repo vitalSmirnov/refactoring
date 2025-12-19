@@ -2,7 +2,6 @@
 using CloneIntime.Models.DTO;
 using CloneIntime.Models.ModelTypes;
 using CloneIntime.Services;
-using CloneIntime.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,21 +34,18 @@ namespace CloneIntime.Controllers
         }
 
         [HttpPost("add/teacher")]
-        //[Authorize]
         public async Task<IActionResult> AddTeacher([FromBody] ProffessorDTO newTeacher)
         {
             return await _adminService.AddTeacher(newTeacher);
         }
 
         [HttpPut("update/teacher/{teacherId}")]
-        //[Authorize]
         public async Task<IActionResult> UpdateTeacher(string teacherId, [FromBody] ProffessorDTO newTeacherData)
         {
             return await _adminService.UpdateTeacher(teacherId, newTeacherData);
         }
 
         [HttpDelete("delete/teacher/{teacherId}")]
-        //[Authorize]
         public async Task<IActionResult> DeleteTeacher(string teacherId)
         {
             return await _adminService.DeleteTeacher(teacherId);

@@ -1,6 +1,4 @@
-﻿using CloneIntime.Entities;
-using CloneIntime.Models.DTO;
-using Microsoft.AspNetCore.Mvc;
+﻿using CloneIntime.Models.DTO;
 
 namespace CloneIntime.Services.Interfaces
 {
