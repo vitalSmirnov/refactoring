@@ -25,12 +25,12 @@ namespace CloneIntime.Services
             return result;
         }
 
-        public async Task<List<AuditoryDTO>> GetAuditory() // Получить группы на определенном направлении
+        public async Task<List<AuditoryDTO>> GetAuditory()
         {
             var auditoryEntities = _context.AuditoryEntities.Where(x => x.IsActive);
 
             if (auditoryEntities == null)
-                return new List<AuditoryDTO>(); //прописать исключение
+                return new List<AuditoryDTO>(); 
 
 
             return FillProfessors(auditoryEntities);

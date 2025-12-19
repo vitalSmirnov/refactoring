@@ -41,7 +41,7 @@ namespace CloneIntime.Services
             return jwt;
         }
 
-        public async Task<string> GetToken(IHeaderDictionary headerDictionary)//HttpContext.Request.Headers
+        public async Task<string> GetToken(IHeaderDictionary headerDictionary) //Берется из HttpContext.Request.Headers
         {
             var requestHeaders = new Dictionary<string, string>();
             foreach (var header in headerDictionary)
@@ -53,7 +53,7 @@ namespace CloneIntime.Services
             return token;
         }
 
-        public async Task<string> GetUserId(ClaimsPrincipal principal)//HttpContext.User
+        public async Task<string> GetUserId(ClaimsPrincipal principal)//Берется из HttpContext.User
         {
             return principal.Claims.SingleOrDefault(p => p.Type == ClaimTypes.NameIdentifier).Value;
         }
