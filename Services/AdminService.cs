@@ -30,7 +30,7 @@ namespace CloneIntime.Services
             return result;
         }
 
-        public async Task<IActionResult> AddTeacher(ProffessorDTO newTeacher)// Получить группы на определенном направлении
+        public async Task<IActionResult> AddTeacher(ProffessorDTO newTeacher)
         {
             var id = Guid.NewGuid();
             await _context.AddAsync(new TeacherEntity
@@ -46,7 +46,7 @@ namespace CloneIntime.Services
 
             return new OkResult();
         }
-        public async Task<IActionResult> UpdateTeacher(string teacherId, ProffessorDTO newTeacher)// Получить группы на определенном направлении
+        public async Task<IActionResult> UpdateTeacher(string teacherId, ProffessorDTO newTeacher)
         {
             var teacher = await _context.TeachersEntities.FirstOrDefaultAsync(x => x.Id.ToString() == teacherId && x.IsActive);
             var disciplines = new List<DisciplineEntity>();
@@ -68,7 +68,7 @@ namespace CloneIntime.Services
 
             return new OkResult();
         }
-        public async Task<IActionResult> DeleteTeacher(string teacherId)// Получить группы на определенном направлении
+        public async Task<IActionResult> DeleteTeacher(string teacherId)
         {
             var teacher = await _context.TeachersEntities.FirstOrDefaultAsync(x => x.Id.ToString() == teacherId && x.IsActive);
 
@@ -107,7 +107,7 @@ namespace CloneIntime.Services
             }
         }
 
-        public async Task<IActionResult> SetPair(SetTimeSlotModel newPairData)// Получить группы на определенном направлении
+        public async Task<IActionResult> SetPair(SetTimeSlotModel newPairData)
         {
             var auditory = await _context.AuditoryEntities.FirstOrDefaultAsync(x => x.Number == newPairData.Auditory);
             var discipline = await _context.DisciplineEntities.FirstOrDefaultAsync(x => x.Id.ToString() == newPairData.Discipline);
@@ -154,7 +154,7 @@ namespace CloneIntime.Services
             }
             else
             {
-                var existingTimeSlot = day.Lessons.FirstOrDefault(x => x.PairNumber == newPairData.PairNumber);//переделать, так как не работает
+                var existingTimeSlot = day.Lessons.FirstOrDefault(x => x.PairNumber == newPairData.PairNumber);
 
                 if (existingTimeSlot == null) {
                     var newTimeslot = new TimeSlotEntity
@@ -194,15 +194,15 @@ namespace CloneIntime.Services
             var auditory = await _context.AuditoryEntities.FirstOrDefaultAsync(x => x.Number == PairNewData.Auditory);
             var discipline = await _context.DisciplineEntities.FirstOrDefaultAsync(x => x.Name == PairNewData.Discipline);
             var teacher = await _context.TeachersEntities.FirstOrDefaultAsync(x => x.Name == PairNewData.Professor);
-
+            // TODO: Добавить обработку ошибок
             if (pair == null)
-                return new NotFoundObjectResult(new {message =  "Pair not found" }); // прописать ошибку
+                return new NotFoundObjectResult(new {message =  "Pair not found" }); 
             if (auditory == null)
-                return new NotFoundObjectResult(new { message = "auditory not found" }); // прописать ошибку
+                return new NotFoundObjectResult(new { message = "auditory not found" }); 
             if (discipline == null)
-                return new NotFoundObjectResult(new { message = "discipline not found" }); // прописать ошибку
+                return new NotFoundObjectResult(new { message = "discipline not found" });
             if (teacher == null)
-                return new NotFoundObjectResult(new { message = "teacher not found" }); // прописать ошибку
+                return new NotFoundObjectResult(new { message = "teacher not found" });
 
             pair.Auditory = auditory;
             pair.Discipline = discipline;
@@ -221,7 +221,7 @@ namespace CloneIntime.Services
 
 
             if (pair == null)
-                return new NotFoundObjectResult(new { message = "Pair not found" }); // прописать ошибку
+                return new NotFoundObjectResult(new { message = "Pair not found" });
 
             _context.PairEntities.Remove(pair);
             _context.SaveChangesAsync();

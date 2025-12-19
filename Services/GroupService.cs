@@ -39,7 +39,7 @@ namespace CloneIntime.Services
             return result;
         }
 
-        public async Task<List<GroupDTO>> GetGroups(string facultyId) // Получить группы на определенном направлении
+        public async Task<List<GroupDTO>> GetGroups(string facultyId)
         {
             var groupEntity = await _context.GroupEntities
                 .Include(x => x.Direction)
@@ -47,8 +47,9 @@ namespace CloneIntime.Services
                 .Where(j => j.Direction.Faculty.Id.ToString() == facultyId && j.IsActive)
                 .ToListAsync();
 
+            //TODO: прописать исключение
             if (groupEntity == null)
-                return new List<GroupDTO>(); //прописать исключение
+                return new List<GroupDTO>();
 
             return FillGroups(groupEntity);
         }

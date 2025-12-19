@@ -29,21 +29,21 @@ namespace CloneIntime.Services
             return result;
         }
 
-        public async Task<List<ProffessorDTO>> GetProfessors() // Получить преподов на определенном направлении
+        public async Task<List<ProffessorDTO>> GetProfessors()
         {
             var professorsEntities = await _context.TeachersEntities
                 .Include(x=> x.Disciplines)
                 .Where(x => x.IsActive)
                 .ToListAsync();
-
+            //TODO: прописать исключение
             if (professorsEntities == null)
-                return new List<ProffessorDTO>(); //прописать исключение
+                return new List<ProffessorDTO>(); 
 
 
             return FillProfessors(professorsEntities);
         }
 
-        public async Task<List<ProffessorDTO>> GetProfessors(string disciplineId) // Получить преподов на определенном Предмете
+        public async Task<List<ProffessorDTO>> GetProfessors(string disciplineId)
         {
             var professorsEntities = await _context.TeachersEntities
                 .Where(x => x.IsActive && x.Disciplines
@@ -52,7 +52,7 @@ namespace CloneIntime.Services
 
 
             if (professorsEntities == null)
-                return new List<ProffessorDTO>(); //прописать исключение
+                return new List<ProffessorDTO>();
 
 
             return FillProfessors(professorsEntities);
