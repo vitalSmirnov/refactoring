@@ -70,11 +70,11 @@ namespace CloneIntime.Services
             };
         }
 
-        public async Task<WeekDTO> GetGroupsSchedule(List<string> groupNumber, DateTime startDate, DateTime endDate)
+        public async Task<WeekDTO> GetGroupsSchedule(List<string> groupNumber, WeekDateDTO interval)
         {
             var groupScheduleEntity = await _context.DayEntities
                 .Where(day => day.Lessons.Any(lesson => lesson.Pair.Any(pair => pair.Group.Any(group => groupNumber.Contains(group.Number)))) 
-                && day.Date.Date >= startDate && day.Date.Date <= endDate)
+                && day.Date.Date >= interval.StartDate && day.Date.Date <= interval.EndDate)
                 .Include(day => day.Lessons)
                     .ThenInclude(timeslot => timeslot.Pair)
                         .ThenInclude(pair => pair.Teacher)
@@ -94,11 +94,11 @@ namespace CloneIntime.Services
             var results = FillSchedule(groupScheduleEntity);
             return results;
         }
-        public async Task<WeekDTO> GetAuditorySchedule(string audId, DateTime startDate, DateTime endDate)
+        public async Task<WeekDTO> GetAuditorySchedule(string audId, WeekDateDTO interval)
         {
             var getAuditoryEntity = await _context.DayEntities
                 .Where(day => day.Lessons.Any(timeslot => timeslot.Pair.Any(pair => pair.Auditory.Number == audId)) 
-                && day.Date.Date >= startDate && day.Date.Date <= endDate)
+                && day.Date.Date >= interval.StartDate && day.Date.Date <= interval.EndDate)
                 .Include(day => day.Lessons)
                     .ThenInclude(timeslot => timeslot.Pair)
                         .ThenInclude(pair => pair.Teacher)
@@ -118,11 +118,11 @@ namespace CloneIntime.Services
             return results;
         }
 
-        public async Task<WeekDTO> GetTecherSchedule(string teacherId, DateTime startDate, DateTime endDate)
+        public async Task<WeekDTO> GetTecherSchedule(string teacherId, WeekDateDTO interval)
         {
             var getTeacherEntity = await _context.DayEntities
                 .Where(day => day.Lessons.Any(timeslot => timeslot.Pair.Any(pair => pair.Teacher.Id.ToString() == teacherId))
-                    && day.Date.Date >= startDate && day.Date.Date <= endDate)
+                    && day.Date.Date >= interval.StartDate && day.Date.Date <= interval.EndDate)
                 .Include(day => day.Lessons)
                     .ThenInclude(timeslot => timeslot.Pair)
                         .ThenInclude(pair => pair.Teacher)
