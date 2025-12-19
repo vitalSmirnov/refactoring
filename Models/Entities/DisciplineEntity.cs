@@ -1,7 +1,8 @@
+using CloneIntime.Models.ModelTypes;
+
 namespace CloneIntime.Entities;
 
-public class DisciplineEntity : BaseEntity
+public class DisciplineEntity : DisciplineModel
 {
-    public string Name { get; set; }
     public List<TeacherEntity> Teachers { get; set; }
 }

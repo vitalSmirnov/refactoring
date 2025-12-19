@@ -1,11 +1,9 @@
-﻿using CloneIntime.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using CloneIntime.Models.ModelTypes;
 
 namespace CloneIntime.Models.DTO
 {
-    public class DisciplineDTO : BaseEntity
+    public class DisciplineDTO : DisciplineModel
     {
-        [Required]
-        public string Name { get; set; }
+
     }
 }

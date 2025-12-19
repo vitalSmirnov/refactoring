@@ -1,8 +1,8 @@
+using CloneIntime.Models.ModelTypes;
+
 namespace CloneIntime.Entities;
 
-public class DirectionEntity : BaseEntity
+public class DirectionEntity : DirectionModel
 {
-    public string Number { get; set; }
-    public string Name { get; set; }
-    public FacultyEntity Faculty { get; set; }
+
 }
