@@ -15,10 +15,11 @@ namespace CloneIntime.Services
         private List<AuditoryDTO> FillProfessors(IQueryable<AuditoryEntity> audit)
         {
             var result = new List<AuditoryDTO>();
+            var AuditoryDTO = new AuditoryDTO();
             result.AddRange(audit.Select(auditory => new AuditoryDTO
             {
                 Id = auditory.Id,
-                Name = auditory.Number + " (" + auditory.Building.Trim() + ")",
+                Name = AuditoryDTO.CreateName(auditory.Number, auditory.Building),
                 Number = auditory.Number,
             }));
 

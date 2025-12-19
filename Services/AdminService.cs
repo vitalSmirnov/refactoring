@@ -7,10 +7,11 @@ using System.IdentityModel.Tokens.Jwt;
 using CloneIntime.Models.Entities;
 using CloneIntime.Models.ModelTypes;
 using CloneIntime.Utils.Constants;
+using CloneIntime.Services.Interfaces;
 
 namespace CloneIntime.Services
 {
-    public class AdminService
+    public class AdminService : IAdminService
     {
         private readonly Context _context;
         private readonly SupportService _support;
