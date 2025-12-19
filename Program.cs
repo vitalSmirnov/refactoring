@@ -1,6 +1,7 @@
 using CloneIntime;
 using CloneIntime.Models;
 using CloneIntime.Services;
+using CloneIntime.Utils.helpers;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ builder.Services.AddScoped<ScheduleService>();
 builder.Services.AddScoped<AdminService>();
 builder.Services.AddScoped<AuditoryService>();
 builder.Services.AddScoped<SupportService>();
+builder.Services.AddScoped<DisciplineHelper>();
 
 
 //DB
