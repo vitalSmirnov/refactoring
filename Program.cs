@@ -26,6 +26,7 @@ builder.Services.AddScoped<AdminService>();
 builder.Services.AddScoped<AuditoryService>();
 builder.Services.AddScoped<SupportService>();
 builder.Services.AddScoped<DisciplineHelper>();
+builder.Services.AddScoped<AdminHelper>();
 
 
 //DB

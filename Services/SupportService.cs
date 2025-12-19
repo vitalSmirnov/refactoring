@@ -13,7 +13,13 @@ namespace CloneIntime.Services
         public SupportService (Context context)
         {
             _context = context;
-        }   
+        }
+        
+    private bool IsTokenExist(string token)
+        {
+            var tokenEntity = _context.TokenEntity.FirstOrDefault(x => x.Token == token);
+            return !(tokenEntity == null);
+        }
 
         private ClaimsIdentity GetIdentity(string email, string id)
         {
@@ -61,8 +67,7 @@ namespace CloneIntime.Services
         public async Task<bool> IsLogged(IHeaderDictionary headerDictionary)
         {
             var token = await GetToken(headerDictionary);
-            var tokenEntity = _context.TokenEntity.FirstOrDefault(x => x.Token == token);
-            return !(tokenEntity == null);
+            return IsTokenExist(token);
         }
     }
 }
