@@ -36,7 +36,7 @@ namespace CloneIntime.Services
                 audience: JWTConfiguration.Audience,
                 notBefore: now,
                 claims: identity.Claims,
-                expires: now.AddMinutes(JWTConfiguration.Lifetime),
+                expires: now.AddMinutes(JWTConfiguration.LifetimeDays),
                 signingCredentials: new SigningCredentials(JWTConfiguration.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             return jwt;
         }
