@@ -1,10 +1,11 @@
+using CloneIntime;
 using CloneIntime.Models;
 using CloneIntime.Services;
-using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
-using CloneIntime;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,6 +77,9 @@ var app = builder.Build();
 //JWT init:
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Load the .env file
+Env.Load();
 
 //DB init:
 using var serviceScope = app.Services.CreateScope();

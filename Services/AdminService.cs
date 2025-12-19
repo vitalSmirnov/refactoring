@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using CloneIntime.Models.Entities;
 using CloneIntime.Models.ModelTypes;
+using CloneIntime.Utils.Constants;
 
 namespace CloneIntime.Services
 {
@@ -196,13 +197,13 @@ namespace CloneIntime.Services
             var teacher = await _context.TeachersEntities.FirstOrDefaultAsync(x => x.Name == PairNewData.Professor);
             // TODO: Добавить обработку ошибок
             if (pair == null)
-                return new NotFoundObjectResult(new {message =  "Pair not found" }); 
+                return new NotFoundObjectResult(new { message = new ErrorMessage().GetNotFoundMessage("Pair") }); 
             if (auditory == null)
-                return new NotFoundObjectResult(new { message = "auditory not found" }); 
+                return new NotFoundObjectResult(new { message = new ErrorMessage().GetNotFoundMessage("Auditory") }); 
             if (discipline == null)
-                return new NotFoundObjectResult(new { message = "discipline not found" });
+                return new NotFoundObjectResult(new { message = new ErrorMessage().GetNotFoundMessage("Discipline") });
             if (teacher == null)
-                return new NotFoundObjectResult(new { message = "teacher not found" });
+                return new NotFoundObjectResult(new { message = new ErrorMessage().GetNotFoundMessage("Profesor") });
 
             pair.Auditory = auditory;
             pair.Discipline = discipline;
@@ -221,7 +222,7 @@ namespace CloneIntime.Services
 
 
             if (pair == null)
-                return new NotFoundObjectResult(new { message = "Pair not found" });
+                return new NotFoundObjectResult(new { message = new ErrorMessage().GetNotFoundMessage("Pair") });
 
             _context.PairEntities.Remove(pair);
             _context.SaveChangesAsync();
@@ -239,7 +240,7 @@ namespace CloneIntime.Services
 
             if (user.Password != model.Password)
                 return new BadRequestObjectResult(new { 
-                    message = "Incorrect Password",
+                    message = ErrorMessage.IncorrectPasswordMessage,
                 });
 
             var id = user.Id;
@@ -263,7 +264,7 @@ namespace CloneIntime.Services
             await _context.TokenEntity.AddAsync(token);
             await _context.SaveChangesAsync();
 
-            return new JsonResult(new { message = "Logged out" });
+            return new JsonResult(new { message = ErrorMessage.LoggedOutMessage });
         }
     }
 }
