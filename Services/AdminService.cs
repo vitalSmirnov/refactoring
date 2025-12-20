@@ -1,13 +1,15 @@
 ﻿using CloneIntime.Entities;
-using CloneIntime.Models.DTO;
+using CloneIntime.Migrations;
 using CloneIntime.Models;
+using CloneIntime.Models.DTO;
+using CloneIntime.Models.Entities;
+using CloneIntime.Models.ModelTypes;
+using CloneIntime.Services.Interfaces;
+using CloneIntime.Utils.Constants;
+using CloneIntime.Utils.helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
-using CloneIntime.Models.Entities;
-using CloneIntime.Models.ModelTypes;
-using CloneIntime.Utils.Constants;
-using CloneIntime.Services.Interfaces;
 
 namespace CloneIntime.Services
 {
@@ -15,10 +17,13 @@ namespace CloneIntime.Services
     {
         private readonly Context _context;
         private readonly SupportService _support;
-        public AdminService(Context context, SupportService support)
+        private readonly AdminHelper _adminHelper;
+        public AdminService(Context context, SupportService support, AdminHelper adminHelper)
         {
             _context = context;
             _support = support;
+            _adminHelper = adminHelper;
+
         }
 
         private List<DisciplineEntity> fillDiscipline(List<DisciplineEntity> disciplines)
@@ -30,6 +35,47 @@ namespace CloneIntime.Services
                 .ToList();
 
             return result;
+        }
+
+        private async void CreateNewDay(PairEntity newPair, SetTimeSlotModel newPairData)
+        {
+            var newTimeslot = new TimeSlotEntity
+            {
+                Id = Guid.NewGuid(),
+                IsActive = true,
+                Pair = new List<PairEntity> { newPair },
+                PairNumber = newPairData.PairNumber
+            };
+            var newDay = new DayEntity
+            {
+                Date = newPairData.Date,
+                DayName = _adminHelper.GetWeekDayNameFromDate(newPairData.Date.Date),
+                Id = Guid.NewGuid(),
+                IsActive = true,
+                Lessons = new List<TimeSlotEntity> {
+                        newTimeslot
+                    }
+            };
+            await _context.TimeSlotEntities.AddAsync(newTimeslot);
+            await _context.DayEntities.AddAsync(newDay);
+        }
+
+        private async void CreateNewTimeslot(DayEntity day, PairEntity newPair, SetTimeSlotModel newPairData)
+        {
+            var newTimeslot = new TimeSlotEntity
+            {
+                Id = Guid.NewGuid(),
+                IsActive = true,
+                Pair = new List<PairEntity> { newPair },
+                PairNumber = newPairData.PairNumber
+            };
+            day.Lessons.Add(newTimeslot);
+            await _context.TimeSlotEntities.AddAsync(newTimeslot);
+        }
+
+        private bool GetActiveTeacherById(TeacherEntity teacher, string teacherId)
+        {
+            return teacher.Id.ToString() == teacherId && teacher.IsActive;
         }
 
         public async Task<IActionResult> AddTeacher(ProffessorDTO newTeacher)
@@ -50,7 +96,7 @@ namespace CloneIntime.Services
         }
         public async Task<IActionResult> UpdateTeacher(string teacherId, ProffessorDTO newTeacher)
         {
-            var teacher = await _context.TeachersEntities.FirstOrDefaultAsync(x => x.Id.ToString() == teacherId && x.IsActive);
+            var teacher = await _context.TeachersEntities.FirstOrDefaultAsync(x => GetActiveTeacherById(x, teacherId));
             var disciplines = new List<DisciplineEntity>();
             var disciplinesEntity = await _context.DisciplineEntities
                 .Where(x => newTeacher.Disciplines.Any(name => name.Id.ToString() == x.Id.ToString()))
@@ -72,7 +118,7 @@ namespace CloneIntime.Services
         }
         public async Task<IActionResult> DeleteTeacher(string teacherId)
         {
-            var teacher = await _context.TeachersEntities.FirstOrDefaultAsync(x => x.Id.ToString() == teacherId && x.IsActive);
+            var teacher = await _context.TeachersEntities.FirstOrDefaultAsync(x => GetActiveTeacherById(x, teacherId));
 
             if (teacher == null)
                 return new NotFoundResult();
@@ -88,37 +134,15 @@ namespace CloneIntime.Services
             return groupEntity;
         }
 
-        private WeekEnum checkWeekDay(DateTime day)
-        {
-            switch (day.DayOfWeek)
-            {
-                case DayOfWeek.Monday: 
-                    return WeekEnum.Monday;
-                case DayOfWeek.Tuesday:
-                    return WeekEnum.Tuesday;
-                case DayOfWeek.Wednesday:
-                    return WeekEnum.Wednesday;
-                case DayOfWeek.Thursday:
-                    return WeekEnum.Thursday;
-                case DayOfWeek.Friday:
-                    return WeekEnum.Friday;
-                case DayOfWeek.Saturday:
-                    return WeekEnum.Saturday;
-                default:
-                    return WeekEnum.Sunday;
-            }
-        }
-
         public async Task<IActionResult> SetPair(SetTimeSlotModel newPairData)
         {
             var auditory = await _context.AuditoryEntities.FirstOrDefaultAsync(x => x.Number == newPairData.Auditory);
             var discipline = await _context.DisciplineEntities.FirstOrDefaultAsync(x => x.Id.ToString() == newPairData.Discipline);
-            var teacher = await _context.TeachersEntities.FirstOrDefaultAsync(x => x.Id.ToString() == newPairData.Professor);
+            var teacher = await _context.TeachersEntities.FirstOrDefaultAsync(x => GetActiveTeacherById(x, newPairData.Professor));
             var day = await _context.DayEntities
                 .Include(x=> x.Lessons)
                 .ThenInclude(j => j.Pair)
                 .FirstOrDefaultAsync(x => x.Date.Date == newPairData.Date.Date);
-            
             var newPair = new PairEntity
             {
                 Auditory = auditory,
@@ -134,40 +158,14 @@ namespace CloneIntime.Services
 
             if (day == null)
             {
-                var newTimeslot = new TimeSlotEntity
-                {
-                    Id = Guid.NewGuid(),
-                    IsActive = true,
-                    Pair = new List<PairEntity> { newPair },
-                    PairNumber = newPairData.PairNumber
-                };
-                day = new DayEntity
-                {
-                    Date = newPairData.Date,
-                    DayName = checkWeekDay(newPairData.Date.Date),
-                    Id = Guid.NewGuid(),
-                    IsActive = true,
-                    Lessons = new List<TimeSlotEntity> {
-                        newTimeslot
-                    }
-                };
-                await _context.TimeSlotEntities.AddAsync(newTimeslot);
-                await _context.DayEntities.AddAsync(day);
+                CreateNewDay(newPair, newPairData);
             }
             else
             {
                 var existingTimeSlot = day.Lessons.FirstOrDefault(x => x.PairNumber == newPairData.PairNumber);
 
                 if (existingTimeSlot == null) {
-                    var newTimeslot = new TimeSlotEntity
-                    {   
-                        Id = Guid.NewGuid(),
-                        IsActive = true,
-                        Pair = new List<PairEntity> { newPair },
-                        PairNumber = newPairData.PairNumber
-                    };
-                    day.Lessons.Add(newTimeslot);
-                    await _context.TimeSlotEntities.AddAsync(newTimeslot);
+                    CreateNewTimeslot(day, newPair, newPairData);
                 }
                 else
                 {
