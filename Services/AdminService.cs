@@ -178,21 +178,40 @@ namespace CloneIntime.Services
             var message = "All right";
             return new OkObjectResult(message);
         }
+
+        private IActionResult? ValidatePairUpdateDependencies(PairEntity pair, AuditoryEntity auditory, DisciplineEntity discipline, TeacherEntity teacher)
+        {
+            var checks = new (object entity, string name)[]
+            {
+                (pair, "Pair"),
+                (auditory, "Auditory"),
+                (discipline, "Discipline"),
+                (teacher, "Profesor")
+            };
+
+            foreach (var check in checks)
+            {
+                if (check.entity == null)
+                {
+                    return new NotFoundObjectResult(new { message = new ErrorMessage().GetNotFoundMessage(check.name) });
+                }
+            }
+
+            return null;
+        }
+
         public async Task<IActionResult> UpdatePair(string id, SetTimeSlotModel PairNewData)
         {
             var pair = await _context.PairEntities.FirstOrDefaultAsync(x => x.Id.ToString() == id && x.IsActive);
             var auditory = await _context.AuditoryEntities.FirstOrDefaultAsync(x => x.Number == PairNewData.Auditory);
             var discipline = await _context.DisciplineEntities.FirstOrDefaultAsync(x => x.Name == PairNewData.Discipline);
             var teacher = await _context.TeachersEntities.FirstOrDefaultAsync(x => x.Name == PairNewData.Professor);
-            // TODO: Добавить обработку ошибок
-            if (pair == null)
-                return new NotFoundObjectResult(new { message = new ErrorMessage().GetNotFoundMessage("Pair") }); 
-            if (auditory == null)
-                return new NotFoundObjectResult(new { message = new ErrorMessage().GetNotFoundMessage("Auditory") }); 
-            if (discipline == null)
-                return new NotFoundObjectResult(new { message = new ErrorMessage().GetNotFoundMessage("Discipline") });
-            if (teacher == null)
-                return new NotFoundObjectResult(new { message = new ErrorMessage().GetNotFoundMessage("Profesor") });
+
+            var validationResult = ValidatePairUpdateDependencies(pair, auditory, discipline, teacher);
+            if (validationResult != null)
+            {
+                return validationResult;
+            }
 
             pair.Auditory = auditory;
             pair.Discipline = discipline;
