@@ -1,6 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneIntime", "CloneIntime.csproj", "{6A762464-567A-4864-96E3-7743F5A56411}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLoneIntimeProjectTest.Test", "..\CLoneIntimeProjectTest.Test\CLoneIntimeProjectTest.Test.csproj", "{F200784E-63A2-4614-9505-C64A7124F690}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +17,15 @@ Global
 		{6A762464-567A-4864-96E3-7743F5A56411}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A762464-567A-4864-96E3-7743F5A56411}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A762464-567A-4864-96E3-7743F5A56411}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F200784E-63A2-4614-9505-C64A7124F690}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F200784E-63A2-4614-9505-C64A7124F690}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F200784E-63A2-4614-9505-C64A7124F690}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F200784E-63A2-4614-9505-C64A7124F690}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {393807F8-35F6-4707-8E92-557B87EA295A}
 	EndGlobalSection
 EndGlobal
