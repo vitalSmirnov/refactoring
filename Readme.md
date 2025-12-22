@@ -10,5 +10,6 @@
 <img width="1365" height="1039" alt="image" src="https://github.com/user-attachments/assets/a345c562-231d-412a-bf06-c6cac330e121" />
 
 ## Стало
-<img width="2177" height="1184" alt="image" src="https://github.com/user-attachments/assets/aaf1edd5-7754-45d4-9778-2ba12d5d5e26" />
+<img width="2414" height="1322" alt="image" src="https://github.com/user-attachments/assets/ebd0a376-a761-43e7-a504-9358788492e7" />
+
 
