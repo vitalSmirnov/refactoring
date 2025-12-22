@@ -26,35 +26,99 @@ namespace CloneIntime.Services
 
         }
 
-        private List<DisciplineEntity> fillDiscipline(List<DisciplineEntity> disciplines)
-        {
-            var disciplineIds = disciplines.Select(disc => disc.Id).ToList();
-
-            var result = _context.DisciplineEntities
-                    .Where(x => disciplineIds.Contains(x.Id))
-                .ToList();
-
-            return result;
-        }
-
         private bool GetActiveTeacherById(TeacherEntity teacher, string teacherId)
         {
             return teacher.Id.ToString() == teacherId && teacher.IsActive;
         }
 
+        private async Task<DayEntity> GetOrCreateDayAsync(DateTime date)
+        {
+            var day = await _context.DayEntities
+                .Include(x => x.Lessons)
+                .ThenInclude(j => j.Pair)
+                .FirstOrDefaultAsync(x => x.Date.Date == date.Date);
+
+            if (day != null)
+            {
+                return day;
+            }
+
+            var newDay = new DayEntity
+            {
+                Id = Guid.NewGuid(),
+                Date = date,
+                DayName = _adminHelper.GetWeekDayNameFromDate(date.Date),
+                IsActive = true,
+                Lessons = new List<TimeSlotEntity>()
+            };
+
+            await _context.DayEntities.AddAsync(newDay);
+            return newDay;
+        }
+
+        private async Task<TimeSlotEntity> GetOrCreateTimeSlotAsync(DayEntity day, UInt16 pairNumber)
+        {
+            day.Lessons ??= new List<TimeSlotEntity>();
+
+            var slot = day.Lessons.FirstOrDefault(x => x.PairNumber == pairNumber);
+            if (slot != null)
+            {
+                return slot;
+            }
+
+            slot = new TimeSlotEntity
+            {
+                Id = Guid.NewGuid(),
+                IsActive = true,
+                PairNumber = pairNumber,
+                Pair = new List<PairEntity>()
+            };
+
+            day.Lessons.Add(slot);
+            await _context.TimeSlotEntities.AddAsync(slot);
+
+            return slot;
+        }
+
+        private IActionResult? ValidatePairUpdateDependencies(PairEntity pair, AuditoryEntity auditory, DisciplineEntity discipline, TeacherEntity teacher)
+        {
+            var checks = new (object entity, string name)[]
+            {
+                (pair, "Pair"),
+                (auditory, "Auditory"),
+                (discipline, "Discipline"),
+                (teacher, "Profesor")
+            };
+
+            foreach (var check in checks)
+            {
+                if (check.entity == null)
+                {
+                    return new NotFoundObjectResult(new { message = new ErrorMessage().GetNotFoundMessage(check.name) });
+                }
+            }
+
+            return null;
+        }
+
         public async Task<IActionResult> AddTeacher(ProffessorDTO newTeacher)
         {
             var id = Guid.NewGuid();
+            var disciplineIds = newTeacher.Disciplines.Select(d => d.Id).ToList();
+            var disciplines = await _context.DisciplineEntities
+                .Where(x => disciplineIds.Contains(x.Id))
+                .ToListAsync();
+
             await _context.AddAsync(new TeacherEntity
             {
                 Name = newTeacher.Name,
                 Email = newTeacher.Email,
                 Id = id,
                 IsActive = true,
-                Disciplines = fillDiscipline(newTeacher.Disciplines)
-        });
+                Disciplines = disciplines
+            });
 
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return new OkResult();
         }
@@ -92,71 +156,21 @@ namespace CloneIntime.Services
             return new OkResult();
         }
 
-        private List<GroupEntity> fillGroups(List<string> groups)
-        {
-            var groupEntity = _context.GroupEntities.Where(x => groups.Any(g => g == x.Number) && x.IsActive).ToList();
-            return groupEntity;
-        }
-
-        private async Task<DayEntity> GetOrCreateDayAsync(DateTime date)
-        {
-            var day = await _context.DayEntities
-                .Include(x => x.Lessons)
-                .ThenInclude(j => j.Pair)
-                .FirstOrDefaultAsync(x => x.Date.Date == date.Date);
-
-            if (day != null)
-            {
-                return day;
-            }
-
-            var newDay = new DayEntity
-            {
-                Id = Guid.NewGuid(),
-                Date = date,
-                DayName = _adminHelper.GetWeekDayNameFromDate(date.Date),
-                IsActive = true,
-                Lessons = new List<TimeSlotEntity>()
-            };
-
-            await _context.DayEntities.AddAsync(newDay);
-            return newDay;
-        }
-
-        // Ensures a timeslot exists on the provided day for the given pair number, creating and tracking it when missing.
-        private async Task<TimeSlotEntity> GetOrCreateTimeSlotAsync(DayEntity day, UInt16 pairNumber)
-        {
-            day.Lessons ??= new List<TimeSlotEntity>();
-
-            var slot = day.Lessons.FirstOrDefault(x => x.PairNumber == pairNumber);
-            if (slot != null)
-            {
-                return slot;
-            }
-
-            slot = new TimeSlotEntity
-            {
-                Id = Guid.NewGuid(),
-                IsActive = true,
-                PairNumber = pairNumber,
-                Pair = new List<PairEntity>()
-            };
-
-            day.Lessons.Add(slot);
-            await _context.TimeSlotEntities.AddAsync(slot);
-
-            return slot;
-        }
         public async Task<IActionResult> SetPair(SetTimeSlotModel newPairData)
         {
             var auditory = await _context.AuditoryEntities.FirstOrDefaultAsync(x => x.Number == newPairData.Auditory);
             var discipline = await _context.DisciplineEntities.FirstOrDefaultAsync(x => x.Id.ToString() == newPairData.Discipline);
             var teacher = await _context.TeachersEntities.FirstOrDefaultAsync(x => GetActiveTeacherById(x, newPairData.Professor));
+
+            var groups = await _context.GroupEntities
+                .Where(x => newPairData.Groups.Contains(x.Number) && x.IsActive)
+                .ToListAsync();
+
             var newPair = new PairEntity
             {
                 Auditory = auditory,
                 Discipline = discipline,
-                Group = fillGroups(newPairData.Groups),
+                Group = groups,
                 IsActive = true,
                 Id = Guid.NewGuid(),
                 LessonType = newPairData.Type,
@@ -179,27 +193,6 @@ namespace CloneIntime.Services
             return new OkObjectResult(message);
         }
 
-        private IActionResult? ValidatePairUpdateDependencies(PairEntity pair, AuditoryEntity auditory, DisciplineEntity discipline, TeacherEntity teacher)
-        {
-            var checks = new (object entity, string name)[]
-            {
-                (pair, "Pair"),
-                (auditory, "Auditory"),
-                (discipline, "Discipline"),
-                (teacher, "Profesor")
-            };
-
-            foreach (var check in checks)
-            {
-                if (check.entity == null)
-                {
-                    return new NotFoundObjectResult(new { message = new ErrorMessage().GetNotFoundMessage(check.name) });
-                }
-            }
-
-            return null;
-        }
-
         public async Task<IActionResult> UpdatePair(string id, SetTimeSlotModel PairNewData)
         {
             var pair = await _context.PairEntities.FirstOrDefaultAsync(x => x.Id.ToString() == id && x.IsActive);
@@ -213,10 +206,15 @@ namespace CloneIntime.Services
                 return validationResult;
             }
 
+
+            var groups = await _context.GroupEntities
+                .Where(x => PairNewData.Groups.Contains(x.Number) && x.IsActive)
+                .ToListAsync();
+
             pair.Auditory = auditory;
             pair.Discipline = discipline;
             pair.Teacher = teacher;
-            pair.Group = fillGroups(PairNewData.Groups);
+            pair.Group = groups;
 
             _context.PairEntities.Update(pair);
             await _context.SaveChangesAsync();
